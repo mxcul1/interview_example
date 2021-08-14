@@ -1,10 +1,14 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
 
 function App() {
   return (
     <div className="App">
+      <div id='button'>      
+        <AmplifySignOut />
+        </div>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -16,11 +20,12 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Click here for resume
+          {' Click here for resumé' }
         </a>
+        
       </header>
     </div>
   );
 }
 
-export default App;
+export default withAuthenticator(App);
