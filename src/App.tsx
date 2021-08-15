@@ -8,34 +8,49 @@ import {
   createNote as createNoteMutation,
   deleteNote as deleteNoteMutation,
 } from "./graphql/mutations";
+import { GraphQLResult } from "@aws-amplify/api-graphql";
 
 const initialFormState = { name: "", description: "" };
 type ApiResponse = {
-  data: {
-    listNotes: Array<any>
-  }
-}
+  listNotes: {
+    items: any;
+    nextToken: any;
+  };
+};
 function App() {
-  const [notes, setNotes] = useState( [] as any);
+  const [notes, setNotes] = useState([] as any);
   const [formData, setFormData] = useState(initialFormState);
 
-  // useEffect(() => {
-  //   fetchNotes();
-  // }, []);
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
-  // async function fetchNotes() {
-  //   const apiData: ApiResponse = await API.graphql({ query: listNotes }) as ApiResponse;
-  //   console.log(apiData)
-  //   setNotes(apiData.data.listNotes.items);
-  //   // setNotes(apiData)
-  // }
+  async function fetchNotes() {
+    const apiData = (await API.graphql({
+      query: listNotes,
+    })) as GraphQLResult<ApiResponse>;
+    setNotes(apiData?.data?.listNotes);
+  }
 
-  // async function createNote() {
-  //   if (!formData.name || !formData.description) return;
-  //   await API.graphql({ query: createNoteMutation, variables: { input: formData } });
-  //   setNotes([ ...notes, formData ]);
-  //   setFormData(initialFormState);
-  // }
+  async function createNote() {
+    if (!formData.name || !formData.description) return;
+    await API.graphql({
+      query: createNoteMutation,
+      variables: { input: formData },
+    });
+    setNotes([...notes, formData]);
+    setFormData(initialFormState);
+  }
+
+  async function deleteNote({ id }: { id: number }) {
+    const newNotesArray = notes.filter((note: any) => note.id !== id);
+
+    setNotes(newNotesArray);
+    await API.graphql({
+      query: deleteNoteMutation,
+      variables: { input: { id } },
+    });
+  }
 
   return (
     <div className="App">
@@ -53,6 +68,31 @@ function App() {
         >
           {" Click here for resumé"}
         </a>
+        <div className = "Notes">
+        {/* <h1>My Notes App</h1>
+      <input
+        onChange={e => setFormData({ ...formData, 'name': e.target.value})}
+        placeholder="Note name"
+        value={formData.name}
+      />
+      <input
+        onChange={e => setFormData({ ...formData, 'description': e.target.value})}
+        placeholder="Note description"
+        value={formData.description}
+      />
+      <button onClick={createNote}>Create Note</button> */}
+        {/* <div style={{marginBottom: 30}}>
+        {
+          notes.map((note:any) => (
+            <div key={note.id || note.name}>
+              <h2>{note.name}</h2>
+              <p>{note.description}</p>
+              <button onClick={() => deleteNote(note)}>Delete note</button>
+            </div>
+          ))
+        }
+      </div> */}
+      </div>
       </header>
     </div>
   );
