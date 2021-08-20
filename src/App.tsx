@@ -69,8 +69,36 @@ function App() {
       </div>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>Welcome Macquarie Group!</p>
-        <a
+        <h1>Welcome Macquarie Group!</h1>
+        <p>Please use this note app to take notes!</p>
+        
+        <div className="Notes">
+          <h3>Notes</h3>
+          <input
+            className = 'Note-input'
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Note name"
+            value={formData.name}
+          />
+          <input
+          className = 'Note-input'
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+            placeholder="Note description"
+            value={formData.description}
+          />
+          <button className = 'Button' onClick={createNote}>Create Note</button>
+          <div style={{ marginBottom: 30 }}>
+            {notes.map((note) => (
+              <div key={note.id}>
+                <h4>{note.name}</h4>
+                <p>{note.description}</p>
+                <button className = 'Button' onClick={() => deleteNote(note.id)}>Delete note</button>
+              </div>
+            ))}
+          </div>
+          <a
           className="App-link"
           href="https://drive.google.com/file/d/1iVnZN9L2SO4p-eoIfbP2Pb_vZdm8OOa6/view?usp=sharing"
           target="_blank"
@@ -78,30 +106,6 @@ function App() {
         >
           {" Click here for resumé"}
         </a>
-        <div className="Notes">
-          <h1>My Notes App</h1>
-          <input
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="Note name"
-            value={formData.name}
-          />
-          <input
-            onChange={(e) =>
-              setFormData({ ...formData, description: e.target.value })
-            }
-            placeholder="Note description"
-            value={formData.description}
-          />
-          <button onClick={createNote}>Create Note</button>
-          <div style={{ marginBottom: 30 }}>
-            {notes.map((note) => (
-              <div key={note.id}>
-                <h2>{note.name}</h2>
-                <p>{note.description}</p>
-                <button onClick={() => deleteNote(note.id)}>Delete note</button>
-              </div>
-            ))}
-          </div>
         </div>
       </header>
     </div>
